@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="结合数据复制和图重排序加速图并行计算">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RADAR">
+<meta property="og:url" content="http://example.com/2021/05/26/RADAR/index.html">
+<meta property="og:site_name" content="Yingjie Gao&#39;s Page">
+<meta property="og:description" content="结合数据复制和图重排序加速图并行计算">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/gaoyingjay/PicBed/master/Combining%20Data%20Duplication%20and%20Graph%20Reordering%20to%20Accelerate%20Parallel%20Graph%20Processing.png?token=ASUQX5JB5ELXBSBRVARGYB3AVWYTW">
+<meta property="article:published_time" content="2021-05-26T02:14:08.000Z">
+<meta property="article:modified_time" content="2021-05-26T02:24:12.009Z">
+<meta property="article:author" content="Gao Yingjie">
+<meta property="article:tag" content="云计算技术原理">
+<meta property="article:tag" content="论文">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/gaoyingjay/PicBed/master/Combining%20Data%20Duplication%20and%20Graph%20Reordering%20to%20Accelerate%20Parallel%20Graph%20Processing.png?token=ASUQX5JB5ELXBSBRVARGYB3AVWYTW">
+
+<link rel="canonical" href="http://example.com/2021/05/26/RADAR/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>RADAR | Yingjie Gao's Page</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yingjie Gao's Page</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/files/CV.pdf" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/26/RADAR/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Gao Yingjie">
+      <meta itemprop="description" content="Rage, rage against the dying of the light.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yingjie Gao's Page">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          RADAR
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2021-05-26 10:14:08 / Modified: 10:24:12" itemprop="dateCreated datePublished" datetime="2021-05-26T10:14:08+08:00">2021-05-26</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>结合数据复制和图重排序加速图并行计算</p>
+<a id="more"></a>
+<p>原文 <a target="_blank" rel="noopener" href="https://users.ece.cmu.edu/~vigneshb/papers/HPDC19-CameraReady.pdf">Combining Data Duplication and Graph Reordering to Accelerate Parallel Graph Processing</a></p>
+<p><img src="https://raw.githubusercontent.com/gaoyingjay/PicBed/master/Combining%20Data%20Duplication%20and%20Graph%20Reordering%20to%20Accelerate%20Parallel%20Graph%20Processing.png?token=ASUQX5JB5ELXBSBRVARGYB3AVWYTW" alt="poster"></p>
+<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>&emsp;&emsp;基于单机、共享内存的图计算性能受到昂贵的原子更新和较差的缓存局部性的影响。数据复制，是一种常用方法，它通过创建共享数据的线程本地副本来消除原子更新，但是由于输入图数据的尺寸通常较大，导致极大的内存开销（例如：一个具有1亿个顶点的图，假设每个顶点4个字节，由32个线程处理会带来12.8GB的复制开销）。即使是利用了许多图数据具有的幂律结构的高效内存复制策略（仅复制高度连接的中心顶点）也会因为必须动态识别中心顶点而带来巨大开销。度排序，是一种流行的图重排序技术，它通过重新分配中心顶点到连续的id来提升空间的局部性（中心顶点很可能被一起访问，因为它们的高度连通性），对于单线程图计算是有效的，但是在并行计算中会增加错误共享（不同处理器访问同一cache line的不同中心顶点）。</p>
+<p>&emsp;&emsp;本文的主要观点是，结合数据复制和度排序降低开销。度排序通过为中心顶点分配连续的id，从而可以便捷地识别中心顶点，提高了数据复制的效率。此外，复制中心顶点数据可以消除度排序中的错误共享，因为每个线程都更新中心顶点数据的本地副本。</p>
+<p>&emsp;&emsp;作者设计了一个称为RADAR的系统评估了结合幂律特性数据复制和度排序的优化。RADAR通过消除中心顶点的原子更新和改进图计算的缓存局部性来提高性能，在不同的图计算任务和输入图数据上提供了高达165倍（平均1.88倍）的加速。 </p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><ol>
+<li><p>图计算：图是用于表示对象之间关联关系的一种抽象数据结构，使用顶点和边进行描述：顶点表示对象，边表示对象之间的关系。可抽象成用图描述的数据即为图数据。图计算，就是以图作为数据模型来表达问题并予以解决的这一过程。图计算具有许多重要的应用，包括社交网络分析、路径规划、图学习、数据挖掘和半监督学习等。</p>
+</li>
+<li><p>单机、共享内存：过去，大尺寸图数据使用分布式系统和数据中心系统处理。最近，随着主存容量和核数的增加，图计算已经从分布式系统中转移出来，能够使用一台机器处理具有数亿个顶点和数十亿条边的图数据。最近的研究表明，当一个图可以放入一台机器的主存时，分布式图计算框架的效率要低于在一台机器上处理的效率。高效的单机图计算允许了边缘计算，避免了将图数据传输到数据中心或维护复杂的分布式系统。</p>
+</li>
+<li><p>基于单机的高性能图并行计算的挑战：昂贵的原子指令和较差的缓存局部性。图计算任务具有不规则的内存访问模式，破坏了缓存的局部性。其次，需要使用原子指令来确保并行执行的正确性。这些原子指令会造成严重的性能损失。</p>
+</li>
+<li><p>实际图数据具有幂律分布的特性，即绝大多数顶点的度数很小，极少部分顶点的度数却很大（例如在线社交网络中明星用户的粉丝），这使得计算任务的划分较为困难，十分容易导致负载不均衡。</p>
+</li>
+<li><p>图计算系统通常使用CSR（Compressed Sparse Row）来表示图数据。其中，坐标数组（CA）连续存储图中每个顶点的邻居。偏移数组（OA）存储每个顶点的起始偏移。</p>
+</li>
+<li><p>Push-Pull direction-switching：顶点密集时使用Pull模式，否则使用Push模式，所以需要存储两个CSR。</p>
+</li>
+</ol>
+<h2 id="RADAR-COMBINING-DUPLICATION-AND-REORDERING"><a href="#RADAR-COMBINING-DUPLICATION-AND-REORDERING" class="headerlink" title="RADAR: COMBINING DUPLICATION AND REORDERING"></a>RADAR: COMBINING DUPLICATION AND REORDERING</h2><p>1.表1展示了现有技术及其优缺点，包括RADAR。<br>-HUBDUP：仅复制中心顶点，优点：消除中心顶点的原子操作，缺点：识别中心顶点的花费。<br>-Degree Sorting：根据度的降序重排序图数据，优点：改进缓存局部性，缺点：导致错误共享。<br>-RADAR：在经过度排序的图上复制中心顶点，优点：消除中心顶点的原子操作（很容易识别中心顶点），改进缓存局部性（没有错误共享）。</p>
+<p>2.RADAR= HUBDUP+Degree Sorting。为了推进RADAR的设计，我们首先描述HUBDUP的设计。<br>-图2ａ是HUBDUP的基本流程，更新顶点数据需要判断dst是不是中心顶点。如果是，找到该顶点的线程本地副本的索引，然后更新本地副本（不需要原子操作）。如果不是，使用原子操作更新顶点数据。<br>-图2b是更新线程本地副本，需要映射中心顶点到线程本地副本的索引。<br>-图2c是已经更新的中心顶点副本存回vtxData，需要从线程本地副本的索引映射回vtxData。<br>-图的中心顶点以红色标亮。</p>
+<p>3.如图3所示，是RADAR的设计与实现。首先确定HUBDUP的设计决策，然后是使用visited数组优化reduction costs（因为一次迭代中可能只有中心顶点的一个子集需要存回vtxData，visited优化提升了RADAR1.25倍的性能）。最后是选择需要复制的中心顶点，RADAR应该只复制中心顶点的一个子集，以便所有线程的复制大小之和小于LLC（Last Level Cache）的容量。图4显示了RADAR复制不同数量数据的性能，即使对于最小的输入图数据DBP，ALL-HUBS-RADAR的复制开销也非常大。本文使用公式1来计算RADAR中需要复制的中心顶点的数量。其中，S是一个比例因子，取值[0,1]，控制LLC用于存储重复数据的容量的大小。T是使用的线程数，elemSz是vtxData数组中每个元素的大小（以字节为单位）。δ表示RADAR中的内存开销，因为visited数组对于每个中心顶点都有一个条目，所以δ＝1。</p>
+<h2 id="Experimental-Setup-And-Evaluation"><a href="#Experimental-Setup-And-Evaluation" class="headerlink" title="Experimental Setup And Evaluation"></a>Experimental Setup And Evaluation</h2><ol>
+<li><p>实验环境：见原文</p>
+</li>
+<li><p>本文通过6个应用程序评估了RADAR的性能：Pagerank (PR)、Pagerank-delta (PR-Delta)、Betweenness Centrality (BC)、Radii Estimation (Radii)、Breadth First Search (BFS)、Local Triangle Counting (Local-TriCnt)。输入图使用大型的, 真实世界的, 幂律特性的图数据。</p>
+</li>
+<li><p>图5显示了HUBDUP、度排序和RADAR相对于基线（push-style）的性能。根据结果获得了以下主要发现：</p>
+<ul>
+<li>RADAR优于HUBDUP和度排序：对于PR, PR-Delta, Local-TriCnt,和BC，RADAR始终比单独使用HUBDUP或度排序具有更高的提升。</li>
+<li>HUBDUP在图DBP、MPI和WEB上表现良好，因为大多数中心顶点在这些图中是连续排列的。</li>
+<li>度排序可能导致性能下降。度排序导致某些输入图上PR、PR-Delta和BC变慢。性能下降是由于更新中心顶点数据的线程之间的错误共享导致的。</li>
+<li>图PLD、TWIT和WEB的Local-TriCnt结果显示了度排序具有较高的加速。这是由于算法减少了需要处理的边的数量。</li>
+<li>BFS和Radii的结果表明，度排序始终优于RADAR和HUBDUP。因为BFS和Radii使用了Test-and-Test-and-Set优化，该优化有助于避免度排序导致的一致性通信的增加。</li>
+</ul>
+</li>
+<li><p>图7显示了RADAR和Push-Pull相对于基线的加速（push-based）。bar的总高度表示不考虑预处理开销的加速。</p>
+<ul>
+<li>PageRank：结果表明，使用pull阶段执行PR可以通过消除原子更新来提高性能。然而，RADAR的性能优于pull，因为RADAR还改进了局部性。</li>
+<li>Pagerank-delta: Pull阶段将Push阶段中的规则访问转换为不规则访问。对于许多图，不规则访问造成的性能损失抵消了消除原子更新带来的好处，Push-Pull导致速度减慢。相比之下，RADAR提供了更好的性能。</li>
+<li>Local Triangle Counting: 对于输入是无向图的Local Triangle Counting等应用，RADAR是通过消除原子指令来提高性能的唯一选择。</li>
+<li>Betweenness-Centrality: BC中的pull阶段在不引入不规则访问的情况下消除了原子更新。因此，对于BC来说，Push-Pull的性能往往优于RADAR。</li>
+<li>BFS：Push-Pull通过减少需要处理的边数，大大优于RADAR。</li>
+<li>Radii:由于T&amp;T&amp;S，Radii并没有受到原子更新的限制。消除原子更新对性能提升的可能性很小。</li>
+</ul>
+</li>
+<li><p>为了说明Push-Pull的较高内存占用的限制，本文在SDH图上进行了实验。SDH图在存储图的in-CSR和out-CSR时会导致出现内存不足（OOM）错误，因此无法对图进行Push-Pull优化。图7显示了不同应用的RADAR的性能。结果表示，RADAR在单机、内存受限的机器上比Push-Pull更有效。</p>
+</li>
+<li><p>表2列出了所有输入图上不同优化的预处理算法复杂度和运行时间。HUBDUP的复杂度最低，因为它只扫描所有顶点的度数。Push-Pull具有最大的复杂性，因为它对所有边进行排序构建了一个in-CSR。但是，Push-Pull对无向图的预处理的开销为零，因为无向图的入边和出边相同。最后，RADAR对有向图的预处理的开销比Push-Pull低。图7显示了考虑上述预处理开销（填充的、较低的bar）之后，Push-Pull和RADAR的加速。对于Pagerank和Local Triangle Counting，RADAR也能提供净加速。</p>
+</li>
+</ol>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>&emsp;&emsp;本文提出了RADAR，一种通过减少原子更新和改进缓存局部性来提高图计算性能的优化方法。RADAR结合了HUBDUP和度排序的优点，提供了比单独应用HUBDUP或度排序更好的性能。最后，RADAR可以作为消除图计算中原子更新的Push-Pull direction-switching优化的替代技术。结果表明，RADAR是一种更普适的单节点图计算的优化方法。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86/" rel="tag"># 云计算技术原理</a>
+              <a href="/tags/%E8%AE%BA%E6%96%87/" rel="tag"># 论文</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/02/05/hello-world/" rel="prev" title="Hello World">
+      <i class="fa fa-chevron-left"></i> Hello World
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Gao Yingjie"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Gao Yingjie</p>
+  <div class="site-description" itemprop="description">Rage, rage against the dying of the light.</div>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/gaoyingjay" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;gaoyingjay" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/gaoyingjay@163.com" title="E-Mail → gaoyingjay@163.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gao Yingjie</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
