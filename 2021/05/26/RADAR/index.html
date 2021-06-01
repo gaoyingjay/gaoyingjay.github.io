@@ -18,19 +18,19 @@
 
   <meta name="description" content="结合数据复制和图重排序加速图并行计算">
 <meta property="og:type" content="article">
-<meta property="og:title" content="RADAR">
+<meta property="og:title" content="论文阅读-云计算-RADAR">
 <meta property="og:url" content="http://example.com/2021/05/26/RADAR/index.html">
 <meta property="og:site_name" content="Yingjie Gao&#39;s Page">
 <meta property="og:description" content="结合数据复制和图重排序加速图并行计算">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://raw.githubusercontent.com/gaoyingjay/PicBed/master/Combining%20Data%20Duplication%20and%20Graph%20Reordering%20to%20Accelerate%20Parallel%20Graph%20Processing.png?token=ASUQX5JB5ELXBSBRVARGYB3AVWYTW">
+<meta property="og:image" content="https://yingjay.oss-cn-beijing.aliyuncs.com/img/20210601185514.png">
 <meta property="article:published_time" content="2021-05-26T02:14:08.000Z">
-<meta property="article:modified_time" content="2021-05-26T02:24:12.009Z">
+<meta property="article:modified_time" content="2021-06-01T11:04:03.892Z">
 <meta property="article:author" content="Gao Yingjie">
 <meta property="article:tag" content="云计算技术原理">
 <meta property="article:tag" content="论文">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/gaoyingjay/PicBed/master/Combining%20Data%20Duplication%20and%20Graph%20Reordering%20to%20Accelerate%20Parallel%20Graph%20Processing.png?token=ASUQX5JB5ELXBSBRVARGYB3AVWYTW">
+<meta name="twitter:image" content="https://yingjay.oss-cn-beijing.aliyuncs.com/img/20210601185514.png">
 
 <link rel="canonical" href="http://example.com/2021/05/26/RADAR/">
 
@@ -45,7 +45,7 @@
   };
 </script>
 
-  <title>RADAR | Yingjie Gao's Page</title>
+  <title>论文阅读-云计算-RADAR | Yingjie Gao's Page</title>
   
 
 
@@ -163,7 +163,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          RADAR
+          论文阅读-云计算-RADAR
         </h1>
 
         <div class="post-meta">
@@ -172,10 +172,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2021-05-26 10:14:08 / Modified: 10:24:12" itemprop="dateCreated datePublished" datetime="2021-05-26T10:14:08+08:00">2021-05-26</time>
+              <time title="Created: 2021-05-26 10:14:08" itemprop="dateCreated datePublished" datetime="2021-05-26T10:14:08+08:00">2021-05-26</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-06-01 19:04:03" itemprop="dateModified" datetime="2021-06-01T19:04:03+08:00">2021-06-01</time>
+              </span>
 
           
 
@@ -191,7 +197,7 @@
         <p>结合数据复制和图重排序加速图并行计算</p>
 <a id="more"></a>
 <p>原文 <a target="_blank" rel="noopener" href="https://users.ece.cmu.edu/~vigneshb/papers/HPDC19-CameraReady.pdf">Combining Data Duplication and Graph Reordering to Accelerate Parallel Graph Processing</a></p>
-<p><img src="https://raw.githubusercontent.com/gaoyingjay/PicBed/master/Combining%20Data%20Duplication%20and%20Graph%20Reordering%20to%20Accelerate%20Parallel%20Graph%20Processing.png?token=ASUQX5JB5ELXBSBRVARGYB3AVWYTW" alt="poster"></p>
+<p><img src="https://yingjay.oss-cn-beijing.aliyuncs.com/img/20210601185514.png" alt="poster"></p>
 <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>&emsp;&emsp;基于单机、共享内存的图计算性能受到昂贵的原子更新和较差的缓存局部性的影响。数据复制，是一种常用方法，它通过创建共享数据的线程本地副本来消除原子更新，但是由于输入图数据的尺寸通常较大，导致极大的内存开销（例如：一个具有1亿个顶点的图，假设每个顶点4个字节，由32个线程处理会带来12.8GB的复制开销）。即使是利用了许多图数据具有的幂律结构的高效内存复制策略（仅复制高度连接的中心顶点）也会因为必须动态识别中心顶点而带来巨大开销。度排序，是一种流行的图重排序技术，它通过重新分配中心顶点到连续的id来提升空间的局部性（中心顶点很可能被一起访问，因为它们的高度连通性），对于单线程图计算是有效的，但是在并行计算中会增加错误共享（不同处理器访问同一cache line的不同中心顶点）。</p>
 <p>&emsp;&emsp;本文的主要观点是，结合数据复制和度排序降低开销。度排序通过为中心顶点分配连续的id，从而可以便捷地识别中心顶点，提高了数据复制的效率。此外，复制中心顶点数据可以消除度排序中的错误共享，因为每个线程都更新中心顶点数据的本地副本。</p>
 <p>&emsp;&emsp;作者设计了一个称为RADAR的系统评估了结合幂律特性数据复制和度排序的优化。RADAR通过消除中心顶点的原子更新和改进图计算的缓存局部性来提高性能，在不同的图计算任务和输入图数据上提供了高达165倍（平均1.88倍）的加速。 </p>
