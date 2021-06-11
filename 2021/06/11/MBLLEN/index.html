@@ -16,30 +16,37 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="Rage, rage against the dying of the light.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Yingjie Gao&#39;s Page">
-<meta property="og:url" content="http://example.com/index.html">
+  <meta name="description" content="一种基于深度学习的低光图像增强方法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文阅读-低光增强-MBLLEN">
+<meta property="og:url" content="http://example.com/2021/06/11/MBLLEN/index.html">
 <meta property="og:site_name" content="Yingjie Gao&#39;s Page">
-<meta property="og:description" content="Rage, rage against the dying of the light.">
+<meta property="og:description" content="一种基于深度学习的低光图像增强方法">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://yingjay.oss-cn-beijing.aliyuncs.com/img/20210611140338.png">
+<meta property="og:image" content="https://yingjay.oss-cn-beijing.aliyuncs.com/img/20210611140401.png">
+<meta property="article:published_time" content="2021-06-11T05:46:33.000Z">
+<meta property="article:modified_time" content="2021-06-11T07:29:14.478Z">
 <meta property="article:author" content="Yingjie Gao">
+<meta property="article:tag" content="低光增强">
+<meta property="article:tag" content="论文">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yingjay.oss-cn-beijing.aliyuncs.com/img/20210611140338.png">
 
-<link rel="canonical" href="http://example.com/">
+<link rel="canonical" href="http://example.com/2021/06/11/MBLLEN/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'en'
   };
 </script>
 
-  <title>Yingjie Gao's Page</title>
+  <title>论文阅读-低光增强-MBLLEN | Yingjie Gao's Page</title>
   
 
 
@@ -137,9 +144,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -155,10 +163,9 @@
       <meta itemprop="name" content="Yingjie Gao's Page">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/06/11/MBLLEN/" class="post-title-link" itemprop="url">论文阅读-低光增强-MBLLEN</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          论文阅读-低光增强-MBLLEN
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -182,174 +189,54 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>一种基于深度学习的低光图像增强方法</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/06/11/MBLLEN/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
+        <p>一种基于深度学习的低光图像增强方法</p>
+<a id="more"></a>
+<p>原文 <a target="_blank" rel="noopener" href="http://bmvc2018.org/contents/papers/0700.pdf">MBLLEN: Low-light Image/Video Enhancement Using CNNs</a></p>
+<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>&emsp;&emsp;作者提出了一种基于深度学习的低光图像增强（low-light image enhancement）方法。这个问题的挑战性在于我们需要同时处理各种因素，包括亮度、对比度、伪影、噪声。为了解决这个问题，作者提出了多分支低光增强网络（MBLLEN）。它的核心思想是提取不同层次的丰富特征，通过多个子网进行增强，最后经过多分支融合得到输出图像。通过大量实验发现，作者提出的MBLLEN优于SOTA。作者还表示他们的方法可以直接扩展到处理低光视频。</p>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>&emsp;&emsp;人们对低光图像增强进行了大量研究。他们通常关注恢复图像的亮度和对比度，同时防止诸如颜色失真等问题。现有的方法大致可以分为两类，基于直方图均衡化的方法和基于Retinex理论的方法。前者基于直方图均衡化的思想优化像素亮度；后者恢复场景的光照图，并且相应地增强不同图像区域。</p>
+<p>&emsp;&emsp;现有方法往往依赖于像素统计或视觉机制的某些假设，这些假设可能不适用于某些实际场景。其次，除了亮度/对比度优化，伪影和噪声也要小心地处理。</p>
+<p>&emsp;&emsp;本文提出了一种新的低光图像增强方法。该方法的核心是全卷积神经网络，即多分支低光增强网络（MBLLEN）。MBLLEN包含3个模块，分别是特征提取模块（FEM）、增强模块（EM）和融合模块（FM）。它的思想是：1）利用FEM提取不同层次的丰富特征；2）使用EM分别对不同层次的特征进行增强；3）使用FM融合多分支，得到最终的输出。通过这种方式，MBLLEN能够从各个方面提高图像质量。</p>
+<h2 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h2><p>&emsp;&emsp;如图所示， MBLLEN由3个模块组成：特征提取模块（FEM）、增强模块（EM）和融合模块（FM）。</p>
+<p><img src="https://yingjay.oss-cn-beijing.aliyuncs.com/img/20210611140338.png" alt="网络结构"></p>
+<p><strong>FEM</strong>  它是一个具有10个卷积层的单数据流网络，每个卷积层使用大小为3×3、步长为1的卷积核和ReLU函数，并且没有池化运算。第一层的输入是低光图像。每一层的输出既是下一层的输入，也是EM相应子网的输入。</p>
+<p><strong>EM</strong>  它包含多个子网，子网的数目等于FEM的层数。子网的输入是FEM某一层的输出，并且输出是与原始低光图像大小相同的彩色图像。每个子网都是对称结构，先进行卷积，然后进行反卷积。第一个卷积层使用8个大小为3×3，步长为1的卷积核和ReLU函数。然后是三个卷积层和三个反卷积层，使用大小为5× 5、步长为1的卷积核和ReLU函数，核数分别为16、16、16、16、8和3。注意，所有子网都是同时、独立训练，没有共享任何学习到的参数。</p>
+<p><strong>FM</strong>  它接收所有EM子网的输出，生成最终图像。作者将EM的所有输出排列在颜色通道维度中，然后使用一个1× 1的卷积核来融合它们。</p>
+<p>&emsp;&emsp;该方法经过简单修改后可以用于处理视频增强。1） 让FEM使用3D卷积替换2D卷积，即使用16个大小为3×3×3的卷积核。第一层的输入是31帧的低光彩色视频。每层输出的前三个维度被发送到EM，其余维度作为下一个卷积层的输入。2） EM修改为执行3D卷积。3） FM使用原始的低光视频作为融合的额外输入。</p>
+<h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><p><img src="https://yingjay.oss-cn-beijing.aliyuncs.com/img/20210611140401.png" alt="损失函数"><br>$$<br>Loss= L_{Str}+L_{VGG/{i,j}}+L_{Region}<br>$$<br>$$<br>L_{Str}=L_{SSIM}+L_{MS-SSIM}<br>$$<br>$$<br>L_{SSIM}=-\frac{1}{N}\sum_{p\in img} \frac{2\mu_x\mu_y+C_1}{\mu_x^2+\mu_y^2+C_1}\cdot \frac{2\delta <em>{xy}+C_2}{\delta_x^2+\delta_y^2+C_2}<br>$$<br>$$<br>L</em>{VGG/{i,jj}}=\frac{1}{W_{i,j}H_{i,j}C_{i,j}}\sum_{x=1}^{W_{i,j}}\sum_{y=1}^{H_{i,j}}\sum_{z=1}^{C_{i,j}}\left | \phi_{i,j}(E)<em>{x,y,z}-\phi</em>{i,j}(G)<em>{x,y,z} \right |<br>$$<br>$$<br>L</em>{Region}=w_{L}\cdot \frac{1}{m_Ln_L}\sum_{i=1}^{n_L}\sum_{j=1}^{m_L}(\left | E_L(i,j)-G_L(i,j) \right |)+w_{H}\cdot \frac{1}{m_Hn_H}\sum_{i=1}^{n_H}\sum_{j=1}^{m_H}(\left | E_H(i,j)-G_H(i,j) \right |)<br>$$</p>
+<h2 id="实验细节"><a href="#实验细节" class="headerlink" title="实验细节"></a>实验细节</h2><blockquote>
+<p>Our implementation is done with Keras and Tensorflflow. The proposed MBLLEN can be quickly converged after being trained for 5000 mini-batches on a Titan-X GPU with a set of 16925 images from the PASCAL VOC dataset. We use mini-batches of 24 patches of size 256×256×3. The input image values should be scaled to [0,1]. </p>
+<p>In terms of designing the context loss, we test each convolutional layer of VGG-19. From the fourth convolution block, the enhancement effect decreases slightly. On the other hand, with deeper layers, the feature map size decreases, which increases the computational effificiency. As a trade-off, we use the output of the fourth convolutional layer of the third block of VGG as the context loss extraction layer. </p>
+<p>In the experiment, training is done using the ADAM optimizer with a learning rate of α = 0.002, β1 = 0.9, β2 = 0.999 and ε = 1008 . We also use the learning rate decay strategy, which reduces the learning rate to 95% before the next epoch.</p>
+</blockquote>
+<h2 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h2>
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+          <div class="post-tags">
+              <a href="/tags/%E4%BD%8E%E5%85%89%E5%A2%9E%E5%BC%BA/" rel="tag"># 低光增强</a>
+              <a href="/tags/%E8%AE%BA%E6%96%87/" rel="tag"># 论文</a>
+          </div>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/26/RADAR/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Yingjie Gao">
-      <meta itemprop="description" content="Rage, rage against the dying of the light.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yingjie Gao's Page">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/05/26/RADAR/" class="post-title-link" itemprop="url">论文阅读-云计算-RADAR</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-05-26 10:14:08" itemprop="dateCreated datePublished" datetime="2021-05-26T10:14:08+08:00">2021-05-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-06-11 15:30:05" itemprop="dateModified" datetime="2021-06-11T15:30:05+08:00">2021-06-11</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>结合数据复制和图重排序加速图并行计算</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/05/26/RADAR/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
-    </div>
 
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/05/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Yingjie Gao">
-      <meta itemprop="description" content="Rage, rage against the dying of the light.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yingjie Gao's Page">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/02/05/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-02-05 08:58:49" itemprop="dateCreated datePublished" datetime="2021-02-05T08:58:49+08:00">2021-02-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-02-06 11:25:04" itemprop="dateModified" datetime="2021-02-06T11:25:04+08:00">2021-02-06</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Welcome! </p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/02/05/hello-world/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/05/26/RADAR/" rel="prev" title="论文阅读-云计算-RADAR">
+      <i class="fa fa-chevron-left"></i> 论文阅读-云计算-RADAR
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-
   
 
 

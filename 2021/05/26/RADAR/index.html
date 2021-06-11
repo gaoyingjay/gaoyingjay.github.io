@@ -25,10 +25,10 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://yingjay.oss-cn-beijing.aliyuncs.com/img/20210601185514.png">
 <meta property="article:published_time" content="2021-05-26T02:14:08.000Z">
-<meta property="article:modified_time" content="2021-06-01T11:04:03.892Z">
+<meta property="article:modified_time" content="2021-06-11T07:30:05.238Z">
 <meta property="article:author" content="Yingjie Gao">
-<meta property="article:tag" content="云计算技术原理">
 <meta property="article:tag" content="论文">
+<meta property="article:tag" content="云计算技术原理">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://yingjay.oss-cn-beijing.aliyuncs.com/img/20210601185514.png">
 
@@ -180,7 +180,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-06-01 19:04:03" itemprop="dateModified" datetime="2021-06-01T19:04:03+08:00">2021-06-01</time>
+                <time title="Modified: 2021-06-11 15:30:05" itemprop="dateModified" datetime="2021-06-11T15:30:05+08:00">2021-06-11</time>
               </span>
 
           
@@ -215,15 +215,23 @@
 <li><p>Push-Pull direction-switching：顶点密集时使用Pull模式，否则使用Push模式，所以需要存储两个CSR。</p>
 </li>
 </ol>
-<h2 id="RADAR-COMBINING-DUPLICATION-AND-REORDERING"><a href="#RADAR-COMBINING-DUPLICATION-AND-REORDERING" class="headerlink" title="RADAR: COMBINING DUPLICATION AND REORDERING"></a>RADAR: COMBINING DUPLICATION AND REORDERING</h2><p>1.表1展示了现有技术及其优缺点，包括RADAR。<br>-HUBDUP：仅复制中心顶点，优点：消除中心顶点的原子操作，缺点：识别中心顶点的花费。<br>-Degree Sorting：根据度的降序重排序图数据，优点：改进缓存局部性，缺点：导致错误共享。<br>-RADAR：在经过度排序的图上复制中心顶点，优点：消除中心顶点的原子操作（很容易识别中心顶点），改进缓存局部性（没有错误共享）。</p>
-<p>2.RADAR= HUBDUP+Degree Sorting。为了推进RADAR的设计，我们首先描述HUBDUP的设计。<br>-图2ａ是HUBDUP的基本流程，更新顶点数据需要判断dst是不是中心顶点。如果是，找到该顶点的线程本地副本的索引，然后更新本地副本（不需要原子操作）。如果不是，使用原子操作更新顶点数据。<br>-图2b是更新线程本地副本，需要映射中心顶点到线程本地副本的索引。<br>-图2c是已经更新的中心顶点副本存回vtxData，需要从线程本地副本的索引映射回vtxData。<br>-图的中心顶点以红色标亮。</p>
+<h2 id="RADAR-COMBINING-DUPLICATION-AND-REORDERING"><a href="#RADAR-COMBINING-DUPLICATION-AND-REORDERING" class="headerlink" title="RADAR: COMBINING DUPLICATION AND REORDERING"></a>RADAR: COMBINING DUPLICATION AND REORDERING</h2><p>1.表1展示了现有技术及其优缺点，包括RADAR。</p>
+<ul>
+<li>HUBDUP：仅复制中心顶点，优点：消除中心顶点的原子操作，缺点：识别中心顶点的花费。</li>
+<li>Degree Sorting：根据度的降序重排序图数据，优点：改进缓存局部性，缺点：导致错误共享。</li>
+<li>RADAR：在经过度排序的图上复制中心顶点，优点：消除中心顶点的原子操作（很容易识别中心顶点），改进缓存局部性（没有错误共享）。</li>
+</ul>
+<p>2.RADAR= HUBDUP+Degree Sorting。为了推进RADAR的设计，我们首先描述HUBDUP的设计。</p>
+<ul>
+<li>图2ａ是HUBDUP的基本流程，更新顶点数据需要判断dst是不是中心顶点。如果是，找到该顶点的线程本地副本的索引，然后更新本地副本（不需要原子操作）。如果不是，使用原子操作更新顶点数据。</li>
+<li>图2b是更新线程本地副本，需要映射中心顶点到线程本地副本的索引。</li>
+<li>图2c是已经更新的中心顶点副本存回vtxData，需要从线程本地副本的索引映射回vtxData。</li>
+<li>图的中心顶点以红色标亮。</li>
+</ul>
 <p>3.如图3所示，是RADAR的设计与实现。首先确定HUBDUP的设计决策，然后是使用visited数组优化reduction costs（因为一次迭代中可能只有中心顶点的一个子集需要存回vtxData，visited优化提升了RADAR1.25倍的性能）。最后是选择需要复制的中心顶点，RADAR应该只复制中心顶点的一个子集，以便所有线程的复制大小之和小于LLC（Last Level Cache）的容量。图4显示了RADAR复制不同数量数据的性能，即使对于最小的输入图数据DBP，ALL-HUBS-RADAR的复制开销也非常大。本文使用公式1来计算RADAR中需要复制的中心顶点的数量。其中，S是一个比例因子，取值[0,1]，控制LLC用于存储重复数据的容量的大小。T是使用的线程数，elemSz是vtxData数组中每个元素的大小（以字节为单位）。δ表示RADAR中的内存开销，因为visited数组对于每个中心顶点都有一个条目，所以δ＝1。</p>
-<h2 id="Experimental-Setup-And-Evaluation"><a href="#Experimental-Setup-And-Evaluation" class="headerlink" title="Experimental Setup And Evaluation"></a>Experimental Setup And Evaluation</h2><ol>
-<li><p>实验环境：见原文</p>
-</li>
-<li><p>本文通过6个应用程序评估了RADAR的性能：Pagerank (PR)、Pagerank-delta (PR-Delta)、Betweenness Centrality (BC)、Radii Estimation (Radii)、Breadth First Search (BFS)、Local Triangle Counting (Local-TriCnt)。输入图使用大型的, 真实世界的, 幂律特性的图数据。</p>
-</li>
-<li><p>图5显示了HUBDUP、度排序和RADAR相对于基线（push-style）的性能。根据结果获得了以下主要发现：</p>
+<h2 id="Experimental-Setup-And-Evaluation"><a href="#Experimental-Setup-And-Evaluation" class="headerlink" title="Experimental Setup And Evaluation"></a>Experimental Setup And Evaluation</h2><p>1.实验环境：见原文</p>
+<p>2.本文通过6个应用程序评估了RADAR的性能：Pagerank (PR)、Pagerank-delta (PR-Delta)、Betweenness Centrality (BC)、Radii Estimation (Radii)、Breadth First Search (BFS)、Local Triangle Counting (Local-TriCnt)。输入图使用大型的, 真实世界的, 幂律特性的图数据。</p>
+<p>3.图5显示了HUBDUP、度排序和RADAR相对于基线（push-style）的性能。根据结果获得了以下主要发现：</p>
 <ul>
 <li>RADAR优于HUBDUP和度排序：对于PR, PR-Delta, Local-TriCnt,和BC，RADAR始终比单独使用HUBDUP或度排序具有更高的提升。</li>
 <li>HUBDUP在图DBP、MPI和WEB上表现良好，因为大多数中心顶点在这些图中是连续排列的。</li>
@@ -231,8 +239,7 @@
 <li>图PLD、TWIT和WEB的Local-TriCnt结果显示了度排序具有较高的加速。这是由于算法减少了需要处理的边的数量。</li>
 <li>BFS和Radii的结果表明，度排序始终优于RADAR和HUBDUP。因为BFS和Radii使用了Test-and-Test-and-Set优化，该优化有助于避免度排序导致的一致性通信的增加。</li>
 </ul>
-</li>
-<li><p>图7显示了RADAR和Push-Pull相对于基线的加速（push-based）。bar的总高度表示不考虑预处理开销的加速。</p>
+<p>4.图7显示了RADAR和Push-Pull相对于基线的加速（push-based）。bar的总高度表示不考虑预处理开销的加速。</p>
 <ul>
 <li>PageRank：结果表明，使用pull阶段执行PR可以通过消除原子更新来提高性能。然而，RADAR的性能优于pull，因为RADAR还改进了局部性。</li>
 <li>Pagerank-delta: Pull阶段将Push阶段中的规则访问转换为不规则访问。对于许多图，不规则访问造成的性能损失抵消了消除原子更新带来的好处，Push-Pull导致速度减慢。相比之下，RADAR提供了更好的性能。</li>
@@ -241,12 +248,8 @@
 <li>BFS：Push-Pull通过减少需要处理的边数，大大优于RADAR。</li>
 <li>Radii:由于T&amp;T&amp;S，Radii并没有受到原子更新的限制。消除原子更新对性能提升的可能性很小。</li>
 </ul>
-</li>
-<li><p>为了说明Push-Pull的较高内存占用的限制，本文在SDH图上进行了实验。SDH图在存储图的in-CSR和out-CSR时会导致出现内存不足（OOM）错误，因此无法对图进行Push-Pull优化。图7显示了不同应用的RADAR的性能。结果表示，RADAR在单机、内存受限的机器上比Push-Pull更有效。</p>
-</li>
-<li><p>表2列出了所有输入图上不同优化的预处理算法复杂度和运行时间。HUBDUP的复杂度最低，因为它只扫描所有顶点的度数。Push-Pull具有最大的复杂性，因为它对所有边进行排序构建了一个in-CSR。但是，Push-Pull对无向图的预处理的开销为零，因为无向图的入边和出边相同。最后，RADAR对有向图的预处理的开销比Push-Pull低。图7显示了考虑上述预处理开销（填充的、较低的bar）之后，Push-Pull和RADAR的加速。对于Pagerank和Local Triangle Counting，RADAR也能提供净加速。</p>
-</li>
-</ol>
+<p>5.为了说明Push-Pull的较高内存占用的限制，本文在SDH图上进行了实验。SDH图在存储图的in-CSR和out-CSR时会导致出现内存不足（OOM）错误，因此无法对图进行Push-Pull优化。图7显示了不同应用的RADAR的性能。结果表示，RADAR在单机、内存受限的机器上比Push-Pull更有效。</p>
+<p>6.表2列出了所有输入图上不同优化的预处理算法复杂度和运行时间。HUBDUP的复杂度最低，因为它只扫描所有顶点的度数。Push-Pull具有最大的复杂性，因为它对所有边进行排序构建了一个in-CSR。但是，Push-Pull对无向图的预处理的开销为零，因为无向图的入边和出边相同。最后，RADAR对有向图的预处理的开销比Push-Pull低。图7显示了考虑上述预处理开销（填充的、较低的bar）之后，Push-Pull和RADAR的加速。对于Pagerank和Local Triangle Counting，RADAR也能提供净加速。</p>
 <h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>&emsp;&emsp;本文提出了RADAR，一种通过减少原子更新和改进缓存局部性来提高图计算性能的优化方法。RADAR结合了HUBDUP和度排序的优点，提供了比单独应用HUBDUP或度排序更好的性能。最后，RADAR可以作为消除图计算中原子更新的Push-Pull direction-switching优化的替代技术。结果表明，RADAR是一种更普适的单节点图计算的优化方法。</p>
 
     </div>
@@ -257,8 +260,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86/" rel="tag"># 云计算技术原理</a>
               <a href="/tags/%E8%AE%BA%E6%96%87/" rel="tag"># 论文</a>
+              <a href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86/" rel="tag"># 云计算技术原理</a>
           </div>
 
         
@@ -270,7 +273,10 @@
     <a href="/2021/02/05/hello-world/" rel="prev" title="Hello World">
       <i class="fa fa-chevron-left"></i> Hello World
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2021/06/11/MBLLEN/" rel="next" title="论文阅读-低光增强-MBLLEN">
+      论文阅读-低光增强-MBLLEN <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
