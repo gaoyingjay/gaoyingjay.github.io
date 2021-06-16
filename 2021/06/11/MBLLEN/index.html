@@ -27,7 +27,7 @@
 <meta property="og:image" content="https://yingjay.oss-cn-beijing.aliyuncs.com/img/20210611140401.png">
 <meta property="og:image" content="https://yingjay.oss-cn-beijing.aliyuncs.com/img/20210611160320.png">
 <meta property="article:published_time" content="2021-06-11T05:46:33.000Z">
-<meta property="article:modified_time" content="2021-06-16T13:32:57.628Z">
+<meta property="article:modified_time" content="2021-06-16T13:36:09.346Z">
 <meta property="article:author" content="Yingjie Gao">
 <meta property="article:tag" content="低光增强">
 <meta property="article:tag" content="论文">
@@ -182,7 +182,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-06-16 21:32:57" itemprop="dateModified" datetime="2021-06-16T21:32:57+08:00">2021-06-16</time>
+                <time title="Modified: 2021-06-16 21:36:09" itemprop="dateModified" datetime="2021-06-16T21:36:09+08:00">2021-06-16</time>
               </span>
 
           
@@ -209,11 +209,11 @@
 <p>&emsp;&emsp;该方法经过简单修改后可以用于处理视频增强。1） 让FEM使用3D卷积替换2D卷积，即使用16个大小为3×3×3的卷积核。第一层的输入是31帧的低光彩色视频。每层输出的前三个维度被发送到EM，其余维度作为下一个卷积层的输入。2） EM修改为执行3D卷积。3） FM使用原始的低光视频作为融合的额外输入。</p>
 <h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><p><img src="https://yingjay.oss-cn-beijing.aliyuncs.com/img/20210611140401.png" alt="损失函数"></p>
 <script type="math/tex; mode=display">
-Loss= L_{Str}+L_{VGG/{i,j}}+L_{Region}</script><script type="math/tex; mode=display">
-L_{Str}=L_{SSIM}+L_{MS-SSIM}</script><script type="math/tex; mode=display">
-L_{SSIM}=-\frac{1}{N}\sum_{p\in img} \frac{2\mu_x\mu_y+C_1}{\mu_x^2+\mu_y^2+C_1}\cdot \frac{2\delta _{xy}+C_2}{\delta_x^2+\delta_y^2+C_2}</script><script type="math/tex; mode=display">
-L_{VGG/{i,jj}}=\frac{1}{W_{i,j}H_{i,j}C_{i,j}}\sum_{x=1}^{W_{i,j}}\sum_{y=1}^{H_{i,j}}\sum_{z=1}^{C_{i,j}}\left \| \phi_{i,j}(E)_{x,y,z}-\phi_{i,j}(G)_{x,y,z} \right \|</script><script type="math/tex; mode=display">
-L_{Region}=w_{L}\cdot \frac{1}{m_Ln_L}\sum_{i=1}^{n_L}\sum_{j=1}^{m_L}(\left \| E_L(i,j)-G_L(i,j) \right \|)+w_{H}\cdot \frac{1}{m_Hn_H}\sum_{i=1}^{n_H}\sum_{j=1}^{m_H}(\left \| E_H(i,j)-G_H(i,j) \right \|)</script><h2 id="实验细节"><a href="#实验细节" class="headerlink" title="实验细节"></a>实验细节</h2><blockquote>
+\small Loss= L_{Str}+L_{VGG/{i,j}}+L_{Region}</script><script type="math/tex; mode=display">
+\small L_{Str}=L_{SSIM}+L_{MS-SSIM}</script><script type="math/tex; mode=display">
+\small L_{SSIM}=-\frac{1}{N}\sum_{p\in img} \frac{2\mu_x\mu_y+C_1}{\mu_x^2+\mu_y^2+C_1}\cdot \frac{2\delta _{xy}+C_2}{\delta_x^2+\delta_y^2+C_2}</script><script type="math/tex; mode=display">
+\small L_{VGG/{i,jj}}=\frac{1}{W_{i,j}H_{i,j}C_{i,j}}\sum_{x=1}^{W_{i,j}}\sum_{y=1}^{H_{i,j}}\sum_{z=1}^{C_{i,j}}\left \| \phi_{i,j}(E)_{x,y,z}-\phi_{i,j}(G)_{x,y,z} \right \|</script><script type="math/tex; mode=display">
+\small L_{Region}=w_{L}\cdot \frac{1}{m_Ln_L}\sum_{i=1}^{n_L}\sum_{j=1}^{m_L}(\left \| E_L(i,j)-G_L(i,j) \right \|)+w_{H}\cdot \frac{1}{m_Hn_H}\sum_{i=1}^{n_H}\sum_{j=1}^{m_H}(\left \| E_H(i,j)-G_H(i,j) \right \|)</script><h2 id="实验细节"><a href="#实验细节" class="headerlink" title="实验细节"></a>实验细节</h2><blockquote>
 <p>Our implementation is done with Keras and Tensorflflow. The proposed MBLLEN can be quickly converged after being trained for 5000 mini-batches on a Titan-X GPU with a set of 16925 images from the PASCAL VOC dataset. We use mini-batches of 24 patches of size 256×256×3. The input image values should be scaled to [0,1]. </p>
 <p>In terms of designing the context loss, we test each convolutional layer of VGG-19. From the fourth convolution block, the enhancement effect decreases slightly. On the other hand, with deeper layers, the feature map size decreases, which increases the computational effificiency. As a trade-off, we use the output of the fourth convolutional layer of the third block of VGG as the context loss extraction layer. </p>
 <p>In the experiment, training is done using the ADAM optimizer with a learning rate of α = 0.002, β1 = 0.9, β2 = 0.999 and ε = 1008 . We also use the learning rate decay strategy, which reduces the learning rate to 95% before the next epoch.</p>
