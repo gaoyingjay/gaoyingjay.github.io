@@ -27,10 +27,10 @@
 <meta property="og:image" content="https://yingjay.oss-cn-beijing.aliyuncs.com/img/20210611140401.png">
 <meta property="og:image" content="https://yingjay.oss-cn-beijing.aliyuncs.com/img/20210611160320.png">
 <meta property="article:published_time" content="2021-06-11T05:46:33.000Z">
-<meta property="article:modified_time" content="2021-06-11T08:10:51.617Z">
+<meta property="article:modified_time" content="2021-06-16T13:32:57.628Z">
 <meta property="article:author" content="Yingjie Gao">
-<meta property="article:tag" content="论文">
 <meta property="article:tag" content="低光增强">
+<meta property="article:tag" content="论文">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://yingjay.oss-cn-beijing.aliyuncs.com/img/20210611140338.png">
 
@@ -174,10 +174,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2021-06-11 13:46:33 / Modified: 16:10:51" itemprop="dateCreated datePublished" datetime="2021-06-11T13:46:33+08:00">2021-06-11</time>
+              <time title="Created: 2021-06-11 13:46:33" itemprop="dateCreated datePublished" datetime="2021-06-11T13:46:33+08:00">2021-06-11</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-06-16 21:32:57" itemprop="dateModified" datetime="2021-06-16T21:32:57+08:00">2021-06-16</time>
+              </span>
 
           
 
@@ -190,9 +196,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>一种基于深度学习的低光图像增强方法</p>
-<a id="more"></a>
-<p>原文 <a target="_blank" rel="noopener" href="http://bmvc2018.org/contents/papers/0700.pdf">MBLLEN: Low-light Image/Video Enhancement Using CNNs</a></p>
+        <p>一种基于深度学习的低光图像增强方法<br><a id="more"></a><br>原文 <a target="_blank" rel="noopener" href="http://bmvc2018.org/contents/papers/0700.pdf">MBLLEN: Low-light Image/Video Enhancement Using CNNs</a></p>
 <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>&emsp;&emsp;作者提出了一种基于深度学习的低光图像增强（low-light image enhancement）方法。这个问题的挑战性在于我们需要同时处理各种因素，包括亮度、对比度、伪影、噪声。为了解决这个问题，作者提出了多分支低光增强网络（MBLLEN）。它的核心思想是提取不同层次的丰富特征，通过多个子网进行增强，最后经过多分支融合得到输出图像。通过大量实验发现，作者提出的MBLLEN优于SOTA。作者还表示他们的方法可以直接扩展到处理低光视频。</p>
 <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>&emsp;&emsp;人们对低光图像增强进行了大量研究。他们通常关注恢复图像的亮度和对比度，同时防止诸如颜色失真等问题。现有的方法大致可以分为两类，基于直方图均衡化的方法和基于Retinex理论的方法。前者基于直方图均衡化的思想优化像素亮度；后者恢复场景的光照图，并且相应地增强不同图像区域。</p>
 <p>&emsp;&emsp;现有方法往往依赖于像素统计或视觉机制的某些假设，这些假设可能不适用于某些实际场景。其次，除了亮度/对比度优化，伪影和噪声也要小心地处理。</p>
@@ -203,8 +207,13 @@
 <p><strong>EM</strong>  它包含多个子网，子网的数目等于FEM的层数。子网的输入是FEM某一层的输出，并且输出是与原始低光图像大小相同的彩色图像。每个子网都是对称结构，先进行卷积，然后进行反卷积。第一个卷积层使用8个大小为3×3，步长为1的卷积核和ReLU函数。然后是三个卷积层和三个反卷积层，使用大小为5× 5、步长为1的卷积核和ReLU函数，核数分别为16、16、16、16、8和3。注意，所有子网都是同时、独立训练，没有共享任何学习到的参数。</p>
 <p><strong>FM</strong>  它接收所有EM子网的输出，生成最终图像。作者将EM的所有输出排列在颜色通道维度中，然后使用一个1× 1的卷积核来融合它们。</p>
 <p>&emsp;&emsp;该方法经过简单修改后可以用于处理视频增强。1） 让FEM使用3D卷积替换2D卷积，即使用16个大小为3×3×3的卷积核。第一层的输入是31帧的低光彩色视频。每层输出的前三个维度被发送到EM，其余维度作为下一个卷积层的输入。2） EM修改为执行3D卷积。3） FM使用原始的低光视频作为融合的额外输入。</p>
-<h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><p><img src="https://yingjay.oss-cn-beijing.aliyuncs.com/img/20210611140401.png" alt="损失函数"><br>$$<br>Loss= L_{Str}+L_{VGG/{i,j}}+L_{Region}<br>$$<br>$$<br>L_{Str}=L_{SSIM}+L_{MS-SSIM}<br>$$<br>$$<br>L_{SSIM}=-\frac{1}{N}\sum_{p\in img} \frac{2\mu_x\mu_y+C_1}{\mu_x^2+\mu_y^2+C_1}\cdot \frac{2\delta <em>{xy}+C_2}{\delta_x^2+\delta_y^2+C_2}<br>$$<br>$$<br>L</em>{VGG/{i,jj}}=\frac{1}{W_{i,j}H_{i,j}C_{i,j}}\sum_{x=1}^{W_{i,j}}\sum_{y=1}^{H_{i,j}}\sum_{z=1}^{C_{i,j}}\left | \phi_{i,j}(E)<em>{x,y,z}-\phi</em>{i,j}(G)<em>{x,y,z} \right |<br>$$<br>$$<br>L</em>{Region}=w_{L}\cdot \frac{1}{m_Ln_L}\sum_{i=1}^{n_L}\sum_{j=1}^{m_L}(\left | E_L(i,j)-G_L(i,j) \right |)+w_{H}\cdot \frac{1}{m_Hn_H}\sum_{i=1}^{n_H}\sum_{j=1}^{m_H}(\left | E_H(i,j)-G_H(i,j) \right |)<br>$$</p>
-<h2 id="实验细节"><a href="#实验细节" class="headerlink" title="实验细节"></a>实验细节</h2><blockquote>
+<h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><p><img src="https://yingjay.oss-cn-beijing.aliyuncs.com/img/20210611140401.png" alt="损失函数"></p>
+<script type="math/tex; mode=display">
+Loss= L_{Str}+L_{VGG/{i,j}}+L_{Region}</script><script type="math/tex; mode=display">
+L_{Str}=L_{SSIM}+L_{MS-SSIM}</script><script type="math/tex; mode=display">
+L_{SSIM}=-\frac{1}{N}\sum_{p\in img} \frac{2\mu_x\mu_y+C_1}{\mu_x^2+\mu_y^2+C_1}\cdot \frac{2\delta _{xy}+C_2}{\delta_x^2+\delta_y^2+C_2}</script><script type="math/tex; mode=display">
+L_{VGG/{i,jj}}=\frac{1}{W_{i,j}H_{i,j}C_{i,j}}\sum_{x=1}^{W_{i,j}}\sum_{y=1}^{H_{i,j}}\sum_{z=1}^{C_{i,j}}\left \| \phi_{i,j}(E)_{x,y,z}-\phi_{i,j}(G)_{x,y,z} \right \|</script><script type="math/tex; mode=display">
+L_{Region}=w_{L}\cdot \frac{1}{m_Ln_L}\sum_{i=1}^{n_L}\sum_{j=1}^{m_L}(\left \| E_L(i,j)-G_L(i,j) \right \|)+w_{H}\cdot \frac{1}{m_Hn_H}\sum_{i=1}^{n_H}\sum_{j=1}^{m_H}(\left \| E_H(i,j)-G_H(i,j) \right \|)</script><h2 id="实验细节"><a href="#实验细节" class="headerlink" title="实验细节"></a>实验细节</h2><blockquote>
 <p>Our implementation is done with Keras and Tensorflflow. The proposed MBLLEN can be quickly converged after being trained for 5000 mini-batches on a Titan-X GPU with a set of 16925 images from the PASCAL VOC dataset. We use mini-batches of 24 patches of size 256×256×3. The input image values should be scaled to [0,1]. </p>
 <p>In terms of designing the context loss, we test each convolutional layer of VGG-19. From the fourth convolution block, the enhancement effect decreases slightly. On the other hand, with deeper layers, the feature map size decreases, which increases the computational effificiency. As a trade-off, we use the output of the fourth convolutional layer of the third block of VGG as the context loss extraction layer. </p>
 <p>In the experiment, training is done using the ADAM optimizer with a learning rate of α = 0.002, β1 = 0.9, β2 = 0.999 and ε = 1008 . We also use the learning rate decay strategy, which reduces the learning rate to 95% before the next epoch.</p>
@@ -219,8 +228,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E8%AE%BA%E6%96%87/" rel="tag"># 论文</a>
               <a href="/tags/%E4%BD%8E%E5%85%89%E5%A2%9E%E5%BC%BA/" rel="tag"># 低光增强</a>
+              <a href="/tags/%E8%AE%BA%E6%96%87/" rel="tag"># 论文</a>
           </div>
 
         
@@ -386,6 +395,61 @@
 
 
   
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
